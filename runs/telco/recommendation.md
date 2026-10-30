@@ -5,15 +5,16 @@ Labels: **data** = counted from the file. **derived** = calculated from data num
 
 ## 1. Summary
 
-**Recommendation: do not fund** (based on this data file).
+**Recommendation: do not fund, for the 3,773 month-to-month customers in this file.**
 
 **What we found**
-- Month-to-month customers churn 42.8% (**data**: 1,616 of 3,773). One-year customers churn 11.3% (**data**: 161 of 1,420).
-- The gap holds in every tenure band. Month-to-month churn is 2 to 5 times higher (**derived**).
+- Month-to-month customers churn 42.8% (**derived**: 1,616 / 3,773). One-year customers churn 11.3% (**derived**: 161 / 1,420).
+- The gap holds in every tenure band and every internet type. In tenure bands, month-to-month churn is 2 to 5 times higher (**derived**).
 - Month-to-month contracts are *associated with* higher churn. The data does not show that a contract change causes lower churn.
 - The campaign keeps $12,925 (low), $51,700 (mid), or $206,799 (high) of revenue in 12 months (**derived**). All three cases are below the $2M cost.
 - No conversion rate can reach $2M. At 100% conversion with the full churn drop kept, the campaign keeps $1,033,996 (**derived**).
 - Even if every month-to-month churner stayed 12 more months, the revenue kept is $1,417,774 (**derived**). That is still below $2M.
+- **Bound for any churn window:** the high case cannot be more than 20% × all month-to-month revenue for 12 months = 0.20 × $3,008,655 = $601,731 (**derived**). So the churn-window assumption cannot change the result for this file.
 
 **Value range (12 months, against $2M cost)**
 
@@ -25,10 +26,19 @@ Labels: **data** = counted from the file. **derived** = calculated from data num
 
 **How sure we are:** sure for this file. The result is far from the threshold, and no assumption in the brief can change it. We are **not** sure for the real business, because the full customer base size is **unknown** (see risk 1).
 
+**Stop rule 1 was triggered.** 7 of 12 segments have fewer than 100 one-year customers, and 4 of 12 have fewer than 100 month-to-month customers (**data**). The analyst used the tenure-band one-year rate for the small segments, without asking first. The brief owner must choose a method. Both methods give `do_not_fund`:
+
+| Method for small segments | Low | Mid | High |
+|---|---|---|---|
+| Tenure-band one-year rate (used in this report) | $12,925 | $51,700 | $206,799 |
+| Segment one-year rate, however small | $10,130 | $40,520 | $162,080 |
+
 **Data issues:** 422 rows removed (211 repeated IDs with opposite churn values). 200 rows have charges about 100 times too high, so we left them out of revenue numbers. 11 blank `TotalCharges` were set to 0. We did not use `RetentionOfferAccepted` because it reveals the answer. The result does not change if we keep the repeated IDs.
 
 **Risks**
-1. **Base size is unknown.** If this file is a sample, scale the results. The mid case reaches $2M only with about 145,958 month-to-month customers (38.7 times this file). The high case needs about 36,490 (9.7 times) (**derived**).
+1. **Base size is unknown.** `README.md` says the source is a sample dataset of a fictional company with 7,043 customers, so this file is likely the full base. If it is a sample, scale the results. Formula (**derived**): scale = $2M ÷ case value; customers needed = scale × 3,773.
+   - Mid case: $2M ÷ $51,700 = 38.7 times, so about 145,958 month-to-month customers.
+   - High case: $2M ÷ $206,799 = 9.7 times, so about 36,490 month-to-month customers.
 2. Churn is defined as "left in the last month". We treat it as the share that leaves within 12 months (**assumption**). If the real 12-month churn is higher, the value is higher.
 3. One-year customers chose their own contracts. They may be more loyal by nature, so the churn drop is a maximum.
 
@@ -92,7 +102,9 @@ Full list of rows: `cleaning_log.md`.
 
 ### 3.4 Key result tables
 
-**Churn by contract (data)**
+Customer counts are **data**. Churn rates are **derived** (churned ÷ customers).
+
+**Churn by contract**
 
 | Contract | Customers | Churned | Churn rate |
 |---|---|---|---|
@@ -100,7 +112,7 @@ Full list of rows: `cleaning_log.md`.
 | One year | 1,420 | 161 | 11.3% |
 | Two year | 1,639 | 45 | 2.7% |
 
-**Churn by tenure band and contract (data)**
+**Churn by tenure band and contract**
 
 | Tenure (months) | Month-to-month customers | Month-to-month churn | One-year customers | One-year churn |
 |---|---|---|---|---|
@@ -109,22 +121,30 @@ Full list of rows: `cleaning_log.md`.
 | 25–48 | 782 | 33.1% | 497 | 10.9% |
 | 49–72 | 335 | 26.3% | 610 | 12.8% |
 
-**Month-to-month segments.** If a segment has fewer than 100 one-year customers, the tenure-band one-year rate is used instead.
+**Churn by internet type and contract**
 
-| Tenure | Internet | M2M customers | M2M churn | 1-year rate used (source) | Churn drop | Revenue per customer, 12 months | Value at 100% conversion |
-|---|---|---|---|---|---|---|---|
-| 0–12 | DSL | 670 | 42.7% | 10.8% (band) | 31.9 pp | $572.6 | $122,213 |
-| 0–12 | Fiber optic | 892 | 70.2% | 10.8% (band) | 59.3 pp | $983.8 | $520,765 |
-| 0–12 | No | 372 | 23.1% | 10.8% (band) | 12.3 pp | $243.3 | $11,120 |
-| 13–24 | DSL | 228 | 22.8% | 8.3% (band) | 14.5 pp | $630.8 | $20,880 |
-| 13–24 | Fiber optic | 415 | 50.8% | 8.3% (band) | 42.6 pp | $1,050.1 | $185,450 |
-| 13–24 | No | 79 | 10.1% | 8.3% (band) | 1.8 pp | $248.5 | $361 |
-| 25–48 | DSL | 223 | 16.1% | 9.3% (segment) | 6.9 pp | $642.7 | $9,879 |
-| 25–48 | Fiber optic | 507 | 43.6% | 20.8% (segment) | 22.8 pp | $1,095.8 | $126,583 |
-| 25–48 | No | 52 | 3.8% | 1.7% (segment) | 2.2 pp | $253.5 | $289 |
-| 49–72 | DSL | 70 | 12.9% | 6.5% (segment) | 6.4 pp | $641.2 | $2,868 |
-| 49–72 | Fiber optic | 263 | 29.7% | 18.5% (segment) | 11.1 pp | $1,141.6 | $33,413 |
-| 49–72 | No | 2 | 50.0% | 12.8% (band) | 37.2 pp | $236.4 | $176 |
+| Internet | Month-to-month customers | Month-to-month churn | One-year customers | One-year churn |
+|---|---|---|---|---|
+| DSL | 1,191 | 32.2% | 547 | 9.5% |
+| Fiber optic | 2,077 | 54.7% | 518 | 19.3% |
+| No | 505 | 19.2% | 355 | 2.5% |
+
+**Month-to-month segments.** If a segment has fewer than 100 one-year customers, the tenure-band one-year rate is used instead. The segment's own one-year rate is also shown.
+
+| Tenure | Internet | M2M customers | M2M churn | 1-year customers | 1-year rate in segment | 1-year rate used (source) | Churn drop | Revenue per customer, 12 months | Value at 100% conversion |
+|---|---|---|---|---|---|---|---|---|---|
+| 0–12 | DSL | 670 | 42.7% | 42 | 16.7% | 10.8% (band) | 31.9 pp | $572.6 | $122,213 |
+| 0–12 | Fiber optic | 892 | 70.2% | 7 | 28.6% | 10.8% (band) | 59.3 pp | $983.8 | $520,765 |
+| 0–12 | No | 372 | 23.1% | 71 | 5.6% | 10.8% (band) | 12.3 pp | $243.3 | $11,120 |
+| 13–24 | DSL | 228 | 22.8% | 77 | 14.3% | 8.3% (band) | 14.5 pp | $630.8 | $20,880 |
+| 13–24 | Fiber optic | 415 | 50.8% | 22 | 18.2% | 8.3% (band) | 42.6 pp | $1,050.1 | $185,450 |
+| 13–24 | No | 79 | 10.1% | 94 | 1.1% | 8.3% (band) | 1.8 pp | $248.5 | $361 |
+| 25–48 | DSL | 223 | 16.1% | 227 | 9.3% | 9.3% (segment) | 6.9 pp | $642.7 | $9,879 |
+| 25–48 | Fiber optic | 507 | 43.6% | 149 | 20.8% | 20.8% (segment) | 22.8 pp | $1,095.8 | $126,583 |
+| 25–48 | No | 52 | 3.8% | 121 | 1.7% | 1.7% (segment) | 2.2 pp | $253.5 | $289 |
+| 49–72 | DSL | 70 | 12.9% | 201 | 6.5% | 6.5% (segment) | 6.4 pp | $641.2 | $2,868 |
+| 49–72 | Fiber optic | 263 | 29.7% | 340 | 18.5% | 18.5% (segment) | 11.1 pp | $1,141.6 | $33,413 |
+| 49–72 | No | 2 | 50.0% | 69 | 2.9% | 12.8% (band) | 37.2 pp | $236.4 | $176 |
 | **Total** | | **3,773** | | | | | **$1,033,996** |
 
 **Formulas (derived)**
@@ -162,7 +182,7 @@ Full list of rows: `cleaning_log.md`.
 | TechSupport | Yes | −16.1 | −14.7 | +4.1 | +1.3 | lower | mixed |
 | OnlineSecurity | Yes | −16.8 | −16.3 | −0.7 | +0.3 | lower | mixed |
 
-Note: `LoyaltyAppUser` reverses. App users churn more overall, but less within every contract type. 85.8% of app users are on month-to-month contracts, compared with 28.9% of non-users (**data**). So contract mix hides the pattern within each contract.
+Note: `LoyaltyAppUser` reverses. App users churn more overall, but less within every contract type. 85.8% of app users are on month-to-month contracts, compared with 28.9% of non-users (**derived**: share of each group, in `results.md`). So contract mix hides the pattern within each contract.
 
 ### 3.5 Assumptions
 
@@ -174,8 +194,8 @@ Note: `LoyaltyAppUser` reverses. App users churn more overall, but less within e
 | Months of revenue kept | 12 | 12 | 12 | Brief owner | Decision window |
 | Churn rate = share that leaves within 12 months | Same | Same | Same | Analyst | Data has only "left in the last month" |
 | Target group = all M2M customers in this file (3,773) | Same | Same | Same | Brief owner | Full base size is unknown |
-| Tenure bands 0–12, 13–24, 25–48, 49–72 | Same | Same | Same | Brief owner | First and second contract year |
-| Use the band 1-year rate if a segment has < 100 one-year customers | Same | Same | Same | Analyst | 8 of 12 segments are too small (Fiber 0–12 has 7) |
+| Tenure bands 0–12, 13–24, 25–48, 49–72 | Same | Same | Same | Analyst (not in the brief; brief owner approved them in the plan) | First and second contract year |
+| Use the band 1-year rate if a segment has < 100 one-year customers | Same | Same | Same | Analyst (stop rule 1; brief owner must confirm) | 7 of 12 segments are too small (Fiber 0–12 has 7) |
 | `MonthlyCharges` > 200 is an error | Same | Same | Same | Analyst | Normal values stop at 118.75 |
 | Driver "none" if gap < 2 points | Same | Same | Same | Analyst | Small gaps are noise at this size |
 

@@ -47,22 +47,30 @@ Made by `runs/telco/analysis.py`. Rates are in %. Money is in $.
 | 25-48  |                   782 |             497 |                  33.1 |            10.9 |
 | 49-72  |                   335 |             610 |                  26.3 |            12.8 |
 
+## Churn by internet type and contract
+
+| InternetService   |   customers_Month-to-month |   customers_One year |   churn_rate_Month-to-month |   churn_rate_One year |
+|:------------------|---------------------------:|---------------------:|----------------------------:|----------------------:|
+| DSL               |                       1191 |                  547 |                        32.2 |                   9.5 |
+| Fiber optic       |                       2077 |                  518 |                        54.7 |                  19.3 |
+| No                |                        505 |                  355 |                        19.2 |                   2.5 |
+
 ## Segments (month-to-month)
 
-| band   | internet    |   m2m_customers |   m2m_churned |   m2m_churn_rate |   one_year_customers |   one_year_rate_used | rate_source   |   churn_drop |   revenue_12m_per_customer |   full_drop_value |   ceiling_value |
-|:-------|:------------|----------------:|--------------:|-----------------:|---------------------:|---------------------:|:--------------|-------------:|---------------------------:|------------------:|----------------:|
-| 0-12   | DSL         |             670 |           286 |             42.7 |                   42 |                 10.8 | tenure band   |         31.9 |                      572.6 |         122,212.7 |       163,777.4 |
-| 0-12   | Fiber optic |             892 |           626 |             70.2 |                    7 |                 10.8 | tenure band   |         59.3 |                      983.8 |         520,765.3 |       615,828.5 |
-| 0-12   | No          |             372 |            86 |             23.1 |                   71 |                 10.8 | tenure band   |         12.3 |                      243.3 |          11,119.8 |        20,925.6 |
-| 13-24  | DSL         |             228 |            52 |             22.8 |                   77 |                  8.3 | tenure band   |         14.5 |                      630.8 |          20,880.1 |        32,804.2 |
-| 13-24  | Fiber optic |             415 |           211 |             50.8 |                   22 |                  8.3 | tenure band   |         42.6 |                    1,050.1 |         185,450.4 |       221,579.6 |
-| 13-24  | No          |              79 |             8 |             10.1 |                   94 |                  8.3 | tenure band   |          1.8 |                      248.5 |             360.6 |         1,988.2 |
-| 25-48  | DSL         |             223 |            36 |             16.1 |                  227 |                  9.3 | segment       |          6.9 |                      642.7 |           9,878.7 |        23,138.0 |
-| 25-48  | Fiber optic |             507 |           221 |             43.6 |                  149 |                 20.8 | segment       |         22.8 |                    1,095.8 |         126,582.6 |       242,170.6 |
-| 25-48  | No          |              52 |             2 |              3.8 |                  121 |                  1.7 | segment       |          2.2 |                      253.5 |             289.1 |           506.9 |
-| 49-72  | DSL         |              70 |             9 |             12.9 |                  201 |                  6.5 | segment       |          6.4 |                      641.2 |           2,867.9 |         5,771.0 |
-| 49-72  | Fiber optic |             263 |            78 |             29.7 |                  340 |                 18.5 | segment       |         11.1 |                    1,141.6 |          33,413.0 |        89,047.5 |
-| 49-72  | No          |               2 |             1 |             50.0 |                   69 |                 12.8 | tenure band   |         37.2 |                      236.4 |             175.9 |           236.4 |
+| band   | internet    |   m2m_customers |   m2m_churned |   m2m_churn_rate |   one_year_customers |   one_year_rate_segment |   one_year_rate_used | rate_source   |   churn_drop |   revenue_12m_per_customer |   full_drop_value |   ceiling_value |   all_revenue_12m |
+|:-------|:------------|----------------:|--------------:|-----------------:|---------------------:|------------------------:|---------------------:|:--------------|-------------:|---------------------------:|------------------:|----------------:|------------------:|
+| 0-12   | DSL         |             670 |           286 |             42.7 |                   42 |                    16.7 |                 10.8 | tenure band   |         31.9 |                      572.6 |         122,212.7 |       163,777.4 |         383,674.4 |
+| 0-12   | Fiber optic |             892 |           626 |             70.2 |                    7 |                    28.6 |                 10.8 | tenure band   |         59.3 |                      983.8 |         520,765.3 |       615,828.5 |         877,506.4 |
+| 0-12   | No          |             372 |            86 |             23.1 |                   71 |                     5.6 |                 10.8 | tenure band   |         12.3 |                      243.3 |          11,119.8 |        20,925.6 |          90,515.3 |
+| 13-24  | DSL         |             228 |            52 |             22.8 |                   77 |                    14.3 |                  8.3 | tenure band   |         14.5 |                      630.8 |          20,880.1 |        32,804.2 |         143,833.7 |
+| 13-24  | Fiber optic |             415 |           211 |             50.8 |                   22 |                    18.2 |                  8.3 | tenure band   |         42.6 |                    1,050.1 |         185,450.4 |       221,579.6 |         435,808.1 |
+| 13-24  | No          |              79 |             8 |             10.1 |                   94 |                     1.1 |                  8.3 | tenure band   |          1.8 |                      248.5 |             360.6 |         1,988.2 |          19,633.9 |
+| 25-48  | DSL         |             223 |            36 |             16.1 |                  227 |                     9.3 |                  9.3 | segment       |          6.9 |                      642.7 |           9,878.7 |        23,138.0 |         143,326.8 |
+| 25-48  | Fiber optic |             507 |           221 |             43.6 |                  149 |                    20.8 |                 20.8 | segment       |         22.8 |                    1,095.8 |         126,582.6 |       242,170.6 |         555,567.7 |
+| 25-48  | No          |              52 |             2 |              3.8 |                  121 |                     1.7 |                  1.7 | segment       |          2.2 |                      253.5 |             289.1 |           506.9 |          13,180.5 |
+| 49-72  | DSL         |              70 |             9 |             12.9 |                  201 |                     6.5 |                  6.5 | segment       |          6.4 |                      641.2 |           2,867.9 |         5,771.0 |          44,885.4 |
+| 49-72  | Fiber optic |             263 |            78 |             29.7 |                  340 |                    18.5 |                 18.5 | segment       |         11.1 |                    1,141.6 |          33,413.0 |        89,047.5 |         300,249.9 |
+| 49-72  | No          |               2 |             1 |             50.0 |                   69 |                     2.9 |                 12.8 | tenure band   |         37.2 |                      236.4 |             175.9 |           236.4 |             472.8 |
 
 ## Drivers (gap = focus group churn rate minus the rest, in percentage points)
 
@@ -118,6 +126,12 @@ Made by `runs/telco/analysis.py`. Rates are in %. Money is in $.
     "targeted_customers": 3773,
     "full_drop_value": 1033996.0552157165,
     "ceiling_value": 1417773.8196520137,
+    "all_m2m_revenue_12m": 3008655.0636689942,
+    "small_one_year_segments": 7,
+    "small_m2m_segments": 4,
+    "bound_any_churn_window_low": 150432.7531834497,
+    "bound_any_churn_window_mid": 300865.5063668994,
+    "bound_any_churn_window_high": 601731.0127337988,
     "low": 12924.950690196456,
     "breakeven_conversion_low_keep": 7.736973424266118,
     "mid": 51699.802760785824,
@@ -134,6 +148,12 @@ Made by `runs/telco/analysis.py`. Rates are in %. Money is in $.
     "targeted_customers": 3875,
     "full_drop_value": 1014039.0187252291,
     "ceiling_value": 1458876.637607143,
+    "all_m2m_revenue_12m": 3086923.355226827,
+    "small_one_year_segments": 7,
+    "small_m2m_segments": 4,
+    "bound_any_churn_window_low": 154346.16776134135,
+    "bound_any_churn_window_mid": 308692.3355226827,
+    "bound_any_churn_window_high": 617384.6710453654,
     "low": 12675.487734065364,
     "breakeven_conversion_low_keep": 7.889242772982224,
     "mid": 50701.950936261455,
@@ -145,6 +165,29 @@ Made by `runs/telco/analysis.py`. Rates are in %. Money is in $.
     "m2m_customers_for_mid_to_reach_cost": 152854.0787265306,
     "scale_for_high_to_reach_cost": 9.86155346622778,
     "m2m_customers_for_high_to_reach_cost": 38213.51968163265
-  }
+  },
+  "segment_rates_only": {
+    "targeted_customers": 3773,
+    "full_drop_value": 810401.7584740596,
+    "ceiling_value": 1417773.8196520137,
+    "all_m2m_revenue_12m": 3008655.0636689942,
+    "small_one_year_segments": 7,
+    "small_m2m_segments": 4,
+    "bound_any_churn_window_low": 150432.7531834497,
+    "bound_any_churn_window_mid": 300865.5063668994,
+    "bound_any_churn_window_high": 601731.0127337988,
+    "low": 10130.021980925747,
+    "breakeven_conversion_low_keep": 9.87164689161527,
+    "mid": 40520.08792370299,
+    "breakeven_conversion_mid_keep": 4.935823445807635,
+    "high": 162080.35169481195,
+    "breakeven_conversion_high_keep": 2.4679117229038177,
+    "base_multiple_needed": 1.410662245470784,
+    "scale_for_mid_to_reach_cost": 49.358234458076346,
+    "m2m_customers_for_mid_to_reach_cost": 186228.61861032207,
+    "scale_for_high_to_reach_cost": 12.339558614519087,
+    "m2m_customers_for_high_to_reach_cost": 46557.15465258052
+  },
+  "recommendation_segment_rates_only": "do_not_fund"
 }
 ```

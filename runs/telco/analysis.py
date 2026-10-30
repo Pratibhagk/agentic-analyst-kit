@@ -75,30 +75,41 @@ def clean(raw, keep_first=False):
     return df, log
 
 
-def value_model(df):
-    """Per-segment churn drop and 12-month revenue kept; segment = tenure band x internet type."""
+def value_model(df, band_fallback=True):
+    """Per-segment churn drop and 12-month revenue kept; segment = tenure band x internet type.
+
+    band_fallback=False uses each segment's own 1-year rate, however small the group.
+    """
     m2m = df[df.Contract == "Month-to-month"]
     one = df[df.Contract == "One year"]
     band_one = one.groupby("band").churn.agg(["size", "mean"])
     rows = []
     for (b, i), g in m2m.groupby(["band", "InternetService"]):
         o = one[(one.band == b) & (one.InternetService == i)]
-        if len(o) >= MIN_GROUP:
-            r1, src = o.churn.mean(), "segment"
+        seg_r1 = o.churn.mean() if len(o) else float("nan")
+        if len(o) >= MIN_GROUP or (not band_fallback and len(o)):
+            r1, src = seg_r1, "segment"
         else:
             r1, src = band_one.loc[b, "mean"], "tenure band"
         rev12 = g.loc[~g.charge_outlier, "MonthlyCharges"].mean() * 12
         drop = max(g.churn.mean() - r1, 0)
         rows.append({"band": b, "internet": i, "m2m_customers": len(g),
                      "m2m_churned": int(g.churn.sum()), "m2m_churn_rate": g.churn.mean(),
-                     "one_year_customers": len(o), "one_year_rate_used": r1, "rate_source": src,
+                     "one_year_customers": len(o), "one_year_rate_segment": seg_r1,
+                     "one_year_rate_used": r1, "rate_source": src,
                      "churn_drop": drop, "revenue_12m_per_customer": rev12,
                      "full_drop_value": len(g) * drop * rev12,
-                     "ceiling_value": g.churn.sum() * rev12})
+                     "ceiling_value": g.churn.sum() * rev12, "all_revenue_12m": len(g) * rev12})
     seg = pd.DataFrame(rows)
     base = seg.full_drop_value.sum()   # revenue kept at 100% conversion, 100% of drop kept
     res = {"targeted_customers": int(seg.m2m_customers.sum()),
-           "full_drop_value": base, "ceiling_value": seg.ceiling_value.sum()}
+           "full_drop_value": base, "ceiling_value": seg.ceiling_value.sum(),
+           "all_m2m_revenue_12m": seg.all_revenue_12m.sum(),
+           "small_one_year_segments": int((seg.one_year_customers < MIN_GROUP).sum()),
+           "small_m2m_segments": int((seg.m2m_customers < MIN_GROUP).sum())}
+    # Upper bound for any churn window: converted customers x all their 12-month revenue
+    for k, (conv, _) in CASES.items():
+        res[f"bound_any_churn_window_{k}"] = conv * res["all_m2m_revenue_12m"]
     for k, (conv, keep) in CASES.items():
         res[k] = base * conv * keep
         res[f"breakeven_conversion_{k}_keep"] = COST / (base * keep)
@@ -235,6 +246,15 @@ def main():
     df_sens, _ = clean(raw, keep_first=True)
     seg, res = value_model(df)
     seg_s, res_s = value_model(df_sens)
+    seg_strict, res_strict = value_model(df, band_fallback=False)
+    rec_strict = recommend(res_strict)
+    internet = df[df.Contract.isin(["Month-to-month", "One year"])].pivot_table(
+        index="InternetService", columns="Contract", values="churn", aggfunc=["size", "mean"])
+    internet.columns = [f"{'customers' if a == 'size' else 'churn_rate'}_{b}" for a, b in internet.columns]
+    internet = internet.reset_index()
+    for c in internet.columns:
+        if c.startswith("churn_rate_"):
+            internet[c] *= 100
     rec, rec_s = recommend(res), recommend(res_s)
     drv, drv_table = drivers(df)
 
@@ -297,16 +317,18 @@ def main():
     # Results for the report
     results = {"rows_raw": len(raw), "ids_raw": int(raw.customerID.nunique()), "rows_clean": len(df),
                "churn_rate_clean": df.churn.mean(), "recommendation": rec, "checks": checks,
-               "main": res, "keep_first": res_s}
+               "main": res, "keep_first": res_s,
+               "segment_rates_only": res_strict, "recommendation_segment_rates_only": rec_strict}
     (OUT / "results.json").write_text(json.dumps(results, indent=2, default=float) + "\n")
     seg_out = seg.copy()
-    for c in ["m2m_churn_rate", "one_year_rate_used", "churn_drop"]:
+    for c in ["m2m_churn_rate", "one_year_rate_segment", "one_year_rate_used", "churn_drop"]:
         seg_out[c] *= 100
     (OUT / "results.md").write_text(
         "# Result tables\n\nMade by `runs/telco/analysis.py`. Rates are in %. Money is in $.\n\n"
         "## Profile (raw file)\n\n" + md(prof, ".2f") +
         "\n\n## Churn by contract (clean data)\n\n" + md(contract_overall.reset_index()) +
         "\n\n## Churn by tenure band and contract\n\n" + md(band_tbl) +
+        "\n\n## Churn by internet type and contract\n\n" + md(internet) +
         "\n\n## Segments (month-to-month)\n\n" + md(seg_out, ",.1f") +
         "\n\n## Drivers (gap = focus group churn rate minus the rest, in percentage points)\n\n" + md(drv_table) +
         "\n\n## Contract mix by LoyaltyAppUser (% of row)\n\n" +

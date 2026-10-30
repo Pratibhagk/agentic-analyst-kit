@@ -28,7 +28,8 @@ Copy-paste prompts for every step: **[PROMPTS.md](PROMPTS.md)**. Use **claude.ai
 5. **Deliver:** fix what the review found, push, then merge to `main`.
 
 ## Results
-- **My recommendation:**
+- **My recommendation:** Do not fund the $2M campaign. Even the high case keeps only about $0.21M of revenue in 12 months.<br>
+  This holds for the 3,773 month-to-month customers in this file. Run it again only if the real base exceeds about 36,490.
 - **Full report with charts:** [runs/telco/recommendation.md](runs/telco/recommendation.md)
 - **The brief I wrote:** [briefs/2m-campaign.md](briefs/2m-campaign.md)
 - **My team rule:** see "Analysis rules" in [CLAUDE.md](CLAUDE.md)

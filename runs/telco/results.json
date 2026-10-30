@@ -1,0 +1,48 @@
+{
+  "rows_raw": 7254,
+  "ids_raw": 7043,
+  "rows_clean": 6832,
+  "churn_rate_clean": 0.2666861826697892,
+  "recommendation": "do_not_fund",
+  "checks": {
+    "1_customers": 6832,
+    "1_smallest_segment": 236,
+    "1_pass": true,
+    "2_pass": true,
+    "3_recommendation_main": "do_not_fund",
+    "3_recommendation_keep_first": "do_not_fund",
+    "3_pass": true
+  },
+  "main": {
+    "targeted_customers": 3773,
+    "full_drop_value": 1033996.0552157165,
+    "ceiling_value": 1417773.8196520137,
+    "low": 12924.950690196456,
+    "breakeven_conversion_low_keep": 7.736973424266118,
+    "mid": 51699.802760785824,
+    "breakeven_conversion_mid_keep": 3.868486712133059,
+    "high": 206799.2110431433,
+    "breakeven_conversion_high_keep": 1.9342433560665295,
+    "base_multiple_needed": 1.410662245470784,
+    "scale_for_mid_to_reach_cost": 38.68486712133059,
+    "m2m_customers_for_mid_to_reach_cost": 145958.00364878032,
+    "scale_for_high_to_reach_cost": 9.671216780332648,
+    "m2m_customers_for_high_to_reach_cost": 36489.50091219508
+  },
+  "keep_first": {
+    "targeted_customers": 3875,
+    "full_drop_value": 1014039.0187252291,
+    "ceiling_value": 1458876.637607143,
+    "low": 12675.487734065364,
+    "breakeven_conversion_low_keep": 7.889242772982224,
+    "mid": 50701.950936261455,
+    "breakeven_conversion_mid_keep": 3.944621386491112,
+    "high": 202807.80374504582,
+    "breakeven_conversion_high_keep": 1.972310693245556,
+    "base_multiple_needed": 1.370917833930366,
+    "scale_for_mid_to_reach_cost": 39.44621386491112,
+    "m2m_customers_for_mid_to_reach_cost": 152854.0787265306,
+    "scale_for_high_to_reach_cost": 9.86155346622778,
+    "m2m_customers_for_high_to_reach_cost": 38213.51968163265
+  }
+}
